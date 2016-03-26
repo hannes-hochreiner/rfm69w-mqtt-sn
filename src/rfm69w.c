@@ -26,7 +26,7 @@ int getMode(RFM_MODE* const m, int (*spiTransfer)(unsigned char*, unsigned int, 
   unsigned char data[] = {0x01, 0x00};
   int res = (*spiTransfer)(data, 2, customData);
 
-  if (res != 0) {
+  if (res < 0) {
     return res;
   }
 
@@ -39,7 +39,7 @@ int setMode(const RFM_MODE* const m, int (*spiTransfer)(unsigned char*, unsigned
   unsigned char data[] = {0x01, 0x00};
   int res = (*spiTransfer)(data, 2, customData);
 
-  if (res != 0) {
+  if (res < 0) {
     return res;
   }
 
@@ -53,7 +53,7 @@ int getDataMode(RFM_DATAMODE* const dm, int (*spiTransfer)(unsigned char* const,
   unsigned char data[] = {0x02, 0x00};
   int res = (*spiTransfer)(data, 2, customData);
 
-  if (res != 0) {
+  if (res < 0) {
     return res;
   }
 
@@ -66,7 +66,7 @@ int setDataMode(const RFM_DATAMODE* const dm, int (*spiTransfer)(unsigned char* 
   unsigned char data[] = {0x02, 0x00};
   int res = (*spiTransfer)(data, 2, customData);
 
-  if (res != 0) {
+  if (res < 0) {
     return res;
   }
 
@@ -82,11 +82,11 @@ int getCarrierFrequency(float* const freq, int (*spiTransfer)(unsigned char* con
   unsigned char data[] = {0x07, 0x00, 0x00, 0x00};
   int res = (*spiTransfer)(data, 4, customData);
 
-  if (res != 0) {
+  if (res < 0) {
     return res;
   }
 
-  *freq = 32.0 / 524288.0 * ((float)(data[1] << 16) + (float)(data[2] << 8) + (float)data[3]);
+  *freq = 32.0 / 524288.0 * (((unsigned long)data[1] << 16) + ((unsigned long)data[2] << 8) + (unsigned long)data[3]);
 
   return 0;
 }

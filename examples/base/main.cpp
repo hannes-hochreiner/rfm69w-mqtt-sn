@@ -65,7 +65,7 @@ int main() {
   res = getCarrierFrequency(&cf, spiTransfer);
 
   if (res == -1) {
-    std::cerr << "Error setting carrier frequency\n";
+    std::cerr << "Error getting carrier frequency\n";
     return -1;
   }
 
