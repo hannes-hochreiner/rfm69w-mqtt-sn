@@ -46,4 +46,12 @@ int setDataMode(const RFM_DATAMODE* const dm, int (*spiTransfer)(unsigned char* 
 int getCarrierFrequency(float* const freq, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData = 0);
 int setCarrierFrequency(const float* const freq, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData = 0);
 
+enum RFM_PACKETFORMAT {
+  RFM_PACKETFORMAT_FIXED = 0,
+  RFM_PACKETFORMAT_VARIABLE = 1
+};
+
+int getPacketFormat(RFM_PACKETFORMAT* const pf, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData = 0);
+int setPacketFormat(const RFM_PACKETFORMAT* const pf, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData = 0);
+
 #endif

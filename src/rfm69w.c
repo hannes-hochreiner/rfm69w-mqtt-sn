@@ -102,3 +102,30 @@ int setCarrierFrequency(const float* const freq, int (*spiTransfer)(unsigned cha
 
   return (*spiTransfer)(data, 4, customData);
 }
+
+int getPacketFormat(RFM_PACKETFORMAT* const pf, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData) {
+  unsigned char data[] = {0x37, 0x00};
+  int res = (*spiTransfer)(data, 2, customData);
+
+  if (res < 0) {
+    return res;
+  }
+
+  *pf = (RFM_PACKETFORMAT)(data[1] >> 7);
+
+  return 0;
+}
+
+int setPacketFormat(const RFM_PACKETFORMAT* const pf, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData) {
+  unsigned char data[] = {0x37, 0x00};
+  int res = (*spiTransfer)(data, 2, customData);
+
+  if (res < 0) {
+    return res;
+  }
+
+  data[0] = 0x37 | 1 << 7;
+  data[1] = data[1] ^ (((*pf << 7) ^ data[1]) & 0b10000000);
+
+  return (*spiTransfer)(data, 2, customData);
+}

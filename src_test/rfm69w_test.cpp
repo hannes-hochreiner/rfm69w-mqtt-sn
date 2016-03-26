@@ -120,3 +120,28 @@ TEST(RFM69W, setCarrierFrequency) {
 
   EXPECT_EQ(0, setCarrierFrequency(&cf, fakeSpiFun, &resps));
 }
+
+TEST(RFM69W, getPacketFormat) {
+  RFM_PACKETFORMAT pf;
+  std::queue<int> responses;
+  std::queue<std::tuple<unsigned char, unsigned char>> resps;
+
+  resps.push(std::make_tuple(0x37, 0x00));
+  resps.push(std::make_tuple(0x00, 0b00010000));
+
+  EXPECT_EQ(0, getPacketFormat(&pf, fakeSpiFun, &resps));
+  EXPECT_EQ(RFM_PACKETFORMAT_FIXED, pf);
+}
+
+TEST(RFM69W, setPacketFormat) {
+  RFM_PACKETFORMAT pf = RFM_PACKETFORMAT_VARIABLE;
+  std::queue<int> responses;
+  std::queue<std::tuple<unsigned char, unsigned char>> resps;
+
+  resps.push(std::make_tuple(0x37, 0x00));
+  resps.push(std::make_tuple(0x00, 0b00010000));
+  resps.push(std::make_tuple(0xB7, 0x00));
+  resps.push(std::make_tuple(0b10010000, 0x00));
+
+  EXPECT_EQ(0, setPacketFormat(&pf, fakeSpiFun, &resps));
+}

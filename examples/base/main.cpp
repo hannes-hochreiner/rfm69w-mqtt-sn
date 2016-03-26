@@ -57,11 +57,20 @@ int main() {
   float cf = 868;
 
   if (setCarrierFrequency(&cf, spiTransfer) < 0) {
-    std::cerr << "Error getting carrier frequency\n";
+    std::cerr << "Error setting carrier frequency\n";
     return -1;
   }
 
   std::cout << "set carrier frequency: " << cf << "\n";
+
+  RFM_PACKETFORMAT pf = RFM_PACKETFORMAT_VARIABLE;
+
+  if (setPacketFormat(&pf, spiTransfer) < 0) {
+    std::cerr << "Error setting packet format\n";
+    return -1;
+  }
+
+  std::cout << "packet format set to variable\n";
 
   return 0;
 }
