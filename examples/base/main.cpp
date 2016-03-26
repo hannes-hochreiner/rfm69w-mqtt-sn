@@ -60,5 +60,16 @@ int main() {
     std::cout << "...doing other stuff..\n";
   }
 
+  float cf;
+
+  res = getCarrierFrequency(&cf, spiTransfer);
+
+  if (res == -1) {
+    std::cerr << "Error setting carrier frequency\n";
+    return -1;
+  }
+
+  std::cout << "carrier frequency: " << cf << "\n";
+
   return 0;
 }
