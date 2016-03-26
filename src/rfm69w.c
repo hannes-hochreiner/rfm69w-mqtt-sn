@@ -75,3 +75,30 @@ int setDataMode(const RFM_DATAMODE* const dm, int (*spiTransfer)(unsigned char* 
 
   return (*spiTransfer)(data, 2, customData);
 }
+
+// Freq = 32 MHz / 2^19 * Frf(23, 0) 0x07, 0x08, 0x09; default 0xE4 0xC0 0x00 => 915 MHz
+// Important: set LSB (0x09) last!
+int getCarrierFrequency(float* const freq, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData) {
+  unsigned char data[] = {0x07, 0x00, 0x00, 0x00};
+  int res = (*spiTransfer)(data, 4, customData);
+
+  if (res != 0) {
+    return res;
+  }
+
+  *freq = 32.0 / 524288.0 * ((float)(data[1] << 16) + (float)(data[2] << 8) + (float)data[3]);
+
+  return 0;
+}
+
+int setCarrierFrequency(const float* const freq, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData) {
+  unsigned char data[4];
+  long steps = (long)(*freq / 32.0 * 524288.0);
+
+  data[0] = 0x07 | 1 << 7;
+  data[1] = (steps & 0xFF0000) >> 16;
+  data[2] = (steps & 0xFF00) >> 8;
+  data[3] = steps & 0xFF;
+
+  return (*spiTransfer)(data, 4, customData);
+}

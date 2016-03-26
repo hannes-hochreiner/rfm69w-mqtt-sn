@@ -93,3 +93,30 @@ TEST(RFM69W, setDataMode) {
 
   EXPECT_EQ(0, setDataMode(&dm, fakeSpiFun, &resps));
 }
+
+TEST(RFM69W, getCarrierFrequency) {
+  float cf;
+  std::queue<int> responses;
+  std::queue<std::tuple<unsigned char, unsigned char>> resps;
+
+  resps.push(std::make_tuple(0x07, 0x00));
+  resps.push(std::make_tuple(0x00, 0xE4));
+  resps.push(std::make_tuple(0x00, 0xC0));
+  resps.push(std::make_tuple(0x00, 0x00));
+
+  EXPECT_EQ(0, getCarrierFrequency(&cf, fakeSpiFun, &resps));
+  EXPECT_EQ(915, cf);
+}
+
+TEST(RFM69W, setCarrierFrequency) {
+  float cf = 868;
+  std::queue<int> responses;
+  std::queue<std::tuple<unsigned char, unsigned char>> resps;
+
+  resps.push(std::make_tuple(0x87, 0x00));
+  resps.push(std::make_tuple(0xD9, 0x00));
+  resps.push(std::make_tuple(0x00, 0x00));
+  resps.push(std::make_tuple(0x00, 0x00));
+
+  EXPECT_EQ(0, setCarrierFrequency(&cf, fakeSpiFun, &resps));
+}
