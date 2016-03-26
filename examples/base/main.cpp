@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-#include "rfm69w.h"
+#include "../../src/rfm69w.h"
 #include <wiringPiSPI.h>
 #include <iostream>
 
