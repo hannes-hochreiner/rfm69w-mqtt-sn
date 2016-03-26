@@ -145,3 +145,29 @@ TEST(RFM69W, setPacketFormat) {
 
   EXPECT_EQ(0, setPacketFormat(&pf, fakeSpiFun, &resps));
 }
+
+TEST(RFM69W, getFifoData) {
+  unsigned char data[2];
+  std::queue<int> responses;
+  std::queue<std::tuple<unsigned char, unsigned char>> resps;
+
+  resps.push(std::make_tuple(0x00, 0x00));
+  resps.push(std::make_tuple(0x00, 0xAA));
+  resps.push(std::make_tuple(0x00, 0x5B));
+
+  EXPECT_EQ(0, getFifoData((unsigned char *)&data, 2, fakeSpiFun, &resps));
+  EXPECT_EQ(data[0], 0xAA);
+  EXPECT_EQ(data[1], 0x5B);
+}
+
+TEST(RFM69W, setFifoData) {
+  unsigned char data[] = {0x9C, 0x37};
+  std::queue<int> responses;
+  std::queue<std::tuple<unsigned char, unsigned char>> resps;
+
+  resps.push(std::make_tuple(0x80, 0x00));
+  resps.push(std::make_tuple(0x9C, 0x00));
+  resps.push(std::make_tuple(0x37, 0x00));
+
+  EXPECT_EQ(0, setFifoData((unsigned char *)&data, 2, fakeSpiFun, &resps));
+}

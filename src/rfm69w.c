@@ -129,3 +129,37 @@ int setPacketFormat(const RFM_PACKETFORMAT* const pf, int (*spiTransfer)(unsigne
 
   return (*spiTransfer)(data, 2, customData);
 }
+
+int getFifoData(unsigned char* const data, unsigned int length, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData) {
+  unsigned int spiLength = length + 1;
+  unsigned char spiData[spiLength];
+
+  for (int cntr = 0; cntr < spiLength; cntr++) {
+    spiData[cntr] = 0x00;
+  }
+
+  int res = (*spiTransfer)(spiData, spiLength, customData);
+
+  if (res < 0) {
+    return res;
+  }
+
+  for (unsigned int cntr = 1; cntr < spiLength; cntr++) {
+    data[cntr - 1] = spiData[cntr];
+  }
+
+  return 0;
+}
+
+int setFifoData(const unsigned char* const data, unsigned int length, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData) {
+  unsigned int spiLength = length + 1;
+  unsigned char spiData[spiLength];
+
+  spiData[0] = 0x80;
+
+  for (unsigned int cntr = 0; cntr < length; cntr++) {
+    spiData[cntr + 1] = data[cntr];
+  }
+
+  return (*spiTransfer)(spiData, spiLength, customData);
+}
