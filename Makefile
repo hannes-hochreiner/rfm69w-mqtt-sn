@@ -13,4 +13,4 @@ bld:
 	mkdir bld
 
 base: bld examples/base/main.cpp src/rfm69w.c src/rfm69w.h
-	g++ -lwiringPi examples/base/main.cpp src/rfm69w.c -o bld/main
+	g++ -lwiringPi examples/base/main.cpp src/rfm69w.c -o bld/base
