@@ -29,27 +29,21 @@ int spiTransfer(unsigned char* const bytes, unsigned int length, void* const cus
 }
 
 int main() {
-  int res = wiringPiSPISetup(0, 500000);
-
-  if (res == -1) {
+  if (wiringPiSPISetup(0, 500000) < 0) {
     std::cerr << "Error setting up SPI interface\n";
     return -1;
   }
 
   RFM_MODE m = RFM_MODE_SLEEP;
 
-  res = setMode(&m, spiTransfer);
-
-  if (res == -1) {
+  if (setMode(&m, spiTransfer) < 0) {
     std::cerr << "Error transferring data\n";
     return -1;
   }
 
   m = (RFM_MODE)0;
 
-  res = getMode(&m, spiTransfer);
-
-  if (res == -1) {
+  if (getMode(&m, spiTransfer) < 0) {
     std::cerr << "Error transferring data\n";
     return -1;
   }
@@ -60,16 +54,14 @@ int main() {
     std::cout << "...doing other stuff..\n";
   }
 
-  float cf;
+  float cf = 868;
 
-  res = getCarrierFrequency(&cf, spiTransfer);
-
-  if (res == -1) {
+  if (setCarrierFrequency(&cf, spiTransfer) < 0) {
     std::cerr << "Error getting carrier frequency\n";
     return -1;
   }
 
-  std::cout << "carrier frequency: " << cf << "\n";
+  std::cout << "set carrier frequency: " << cf << "\n";
 
   return 0;
 }
