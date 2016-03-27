@@ -22,6 +22,7 @@
 //
 #include <iostream>
 #include <exception>
+#include <wiringPi.h>
 #include <wiringPiSPI.h>
 #include "baseException.h"
 #include "../../src/rfm69w.h"
@@ -32,9 +33,35 @@ int spiTransfer(unsigned char* const bytes, unsigned int length, void* const cus
   return wiringPiSPIDataRW(0, bytes, length);
 }
 
+void dataReceived() {
+  std::cout << "data recevied\n";
+
+  RFM_MODE ms = RFM_MODE_SLEEP;
+
+  if (setMode(&ms, spiTransfer) < 0) {
+    throw new BaseException("error setting mode");
+  }
+
+  std::cout << "mode set to sleep\n";
+
+  std::cout << "processing data\n";
+
+  RFM_MODE mr = RFM_MODE_RX;
+
+  if (setMode(&mr, spiTransfer) < 0) {
+    throw new BaseException("error setting mode");
+  }
+
+  std::cout << "mode set to receive\n";
+}
+
 int main() {
   try {
     setup();
+
+    while (1) {
+      wiringPiISR(13, INT_EDGE_RISING,  dataReceived);
+    }
 
     return 0;
   } catch (std::exception e) {
@@ -45,13 +72,17 @@ int main() {
 }
 
 void setup() {
+  if (wiringPiSetupPhys() < 0) {
+    throw new BaseException("error setting up GPIO interface");
+  }
+
   if (wiringPiSPISetup(0, 500000) < 0) {
     throw new BaseException("error setting up SPI interface");
   }
 
-  RFM_MODE m = RFM_MODE_SLEEP;
+  RFM_MODE ms = RFM_MODE_SLEEP;
 
-  if (setMode(&m, spiTransfer) < 0) {
+  if (setMode(&ms, spiTransfer) < 0) {
     throw new BaseException("error setting mode");
   }
 
@@ -72,4 +103,12 @@ void setup() {
   }
 
   std::cout << "packet format set to variable\n";
+
+  RFM_MODE mr = RFM_MODE_RX;
+
+  if (setMode(&mr, spiTransfer) < 0) {
+    throw new BaseException("error setting mode");
+  }
+
+  std::cout << "mode set to receive\n";
 }
