@@ -30,7 +30,7 @@
 void setup();
 
 int spiTransfer(unsigned char* const bytes, unsigned int length, void* const customData) {
-  return wiringPiSPIDataRW(0, bytes, length);
+  return wiringPiSPIDataRW(0, bytes, length, customData);
 }
 
 void dataReceived() {
@@ -38,7 +38,7 @@ void dataReceived() {
 
   RFM_MODE ms = RFM_MODE_SLEEP;
 
-  if (setMode(&ms, spiTransfer) < 0) {
+  if (setMode(&ms, spiTransfer, NULL) < 0) {
     throw new BaseException("error setting mode");
   }
 
@@ -48,7 +48,7 @@ void dataReceived() {
 
   RFM_MODE mr = RFM_MODE_RX;
 
-  if (setMode(&mr, spiTransfer) < 0) {
+  if (setMode(&mr, spiTransfer, NULL) < 0) {
     throw new BaseException("error setting mode");
   }
 
@@ -82,7 +82,7 @@ void setup() {
 
   RFM_MODE ms = RFM_MODE_SLEEP;
 
-  if (setMode(&ms, spiTransfer) < 0) {
+  if (setMode(&ms, spiTransfer, NULL) < 0) {
     throw new BaseException("error setting mode");
   }
 
@@ -90,7 +90,7 @@ void setup() {
 
   float cf = 868;
 
-  if (setCarrierFrequency(&cf, spiTransfer) < 0) {
+  if (setCarrierFrequency(&cf, spiTransfer, NULL) < 0) {
     throw new BaseException("error setting carrier frequency");
   }
 
@@ -98,7 +98,7 @@ void setup() {
 
   RFM_PACKETFORMAT pf = RFM_PACKETFORMAT_VARIABLE;
 
-  if (setPacketFormat(&pf, spiTransfer) < 0) {
+  if (setPacketFormat(&pf, spiTransfer, NULL) < 0) {
     throw new BaseException("error setting packet format");
   }
 
@@ -106,7 +106,7 @@ void setup() {
 
   RFM_MODE mr = RFM_MODE_RX;
 
-  if (setMode(&mr, spiTransfer) < 0) {
+  if (setMode(&mr, spiTransfer, NULL) < 0) {
     throw new BaseException("error setting mode");
   }
 

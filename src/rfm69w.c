@@ -22,7 +22,7 @@
 //
 #include "rfm69w.h"
 
-int getMode(RFM_MODE* const m, int (*spiTransfer)(unsigned char*, unsigned int, void* customData), void* customData) {
+int getMode(enum RFM_MODE* const m, int (*spiTransfer)(unsigned char*, unsigned int, void* customData), void* customData) {
   unsigned char data[] = {0x01, 0x00};
   int res = (*spiTransfer)(data, 2, customData);
 
@@ -30,12 +30,12 @@ int getMode(RFM_MODE* const m, int (*spiTransfer)(unsigned char*, unsigned int, 
     return res;
   }
 
-  *m = (RFM_MODE)((data[1] & 0b00011100) >> 2);
+  *m = (enum RFM_MODE)((data[1] & 0b00011100) >> 2);
 
   return 0;
 }
 
-int setMode(const RFM_MODE* const m, int (*spiTransfer)(unsigned char*, unsigned int, void* customData), void* customData) {
+int setMode(const enum RFM_MODE* const m, int (*spiTransfer)(unsigned char*, unsigned int, void* customData), void* customData) {
   unsigned char data[] = {0x01, 0x00};
   int res = (*spiTransfer)(data, 2, customData);
 
@@ -49,7 +49,7 @@ int setMode(const RFM_MODE* const m, int (*spiTransfer)(unsigned char*, unsigned
   return (*spiTransfer)(data, 2, customData);
 }
 
-int getDataMode(RFM_DATAMODE* const dm, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData) {
+int getDataMode(enum RFM_DATAMODE* const dm, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData) {
   unsigned char data[] = {0x02, 0x00};
   int res = (*spiTransfer)(data, 2, customData);
 
@@ -57,12 +57,12 @@ int getDataMode(RFM_DATAMODE* const dm, int (*spiTransfer)(unsigned char* const,
     return res;
   }
 
-  *dm = (RFM_DATAMODE)((data[1] & 0b01100000) >> 5);
+  *dm = (enum RFM_DATAMODE)((data[1] & 0b01100000) >> 5);
 
   return 0;
 }
 
-int setDataMode(const RFM_DATAMODE* const dm, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData) {
+int setDataMode(const enum RFM_DATAMODE* const dm, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData) {
   unsigned char data[] = {0x02, 0x00};
   int res = (*spiTransfer)(data, 2, customData);
 
@@ -103,7 +103,7 @@ int setCarrierFrequency(const float* const freq, int (*spiTransfer)(unsigned cha
   return (*spiTransfer)(data, 4, customData);
 }
 
-int getPacketFormat(RFM_PACKETFORMAT* const pf, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData) {
+int getPacketFormat(enum RFM_PACKETFORMAT* const pf, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData) {
   unsigned char data[] = {0x37, 0x00};
   int res = (*spiTransfer)(data, 2, customData);
 
@@ -111,12 +111,12 @@ int getPacketFormat(RFM_PACKETFORMAT* const pf, int (*spiTransfer)(unsigned char
     return res;
   }
 
-  *pf = (RFM_PACKETFORMAT)(data[1] >> 7);
+  *pf = (enum RFM_PACKETFORMAT)(data[1] >> 7);
 
   return 0;
 }
 
-int setPacketFormat(const RFM_PACKETFORMAT* const pf, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData) {
+int setPacketFormat(const enum RFM_PACKETFORMAT* const pf, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData) {
   unsigned char data[] = {0x37, 0x00};
   int res = (*spiTransfer)(data, 2, customData);
 

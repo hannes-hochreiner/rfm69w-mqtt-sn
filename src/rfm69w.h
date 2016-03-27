@@ -31,8 +31,8 @@ enum RFM_MODE {
   RFM_MODE_RX = 4
 };
 
-int getMode(RFM_MODE* const m, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData = 0);
-int setMode(const RFM_MODE* const m, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData = 0);
+int getMode(enum RFM_MODE* const m, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+int setMode(const enum RFM_MODE* const m, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
 
 enum RFM_DATAMODE {
   RFM_DATAMODE_PACKET = 0,
@@ -40,20 +40,20 @@ enum RFM_DATAMODE {
   RFM_DATAMODE_CONTWITHOUTSYNC = 3
 };
 
-int getDataMode(RFM_DATAMODE* const dm, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData = 0);
-int setDataMode(const RFM_DATAMODE* const dm, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData = 0);
+int getDataMode(enum RFM_DATAMODE* const dm, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+int setDataMode(const enum RFM_DATAMODE* const dm, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
 
-int getCarrierFrequency(float* const freq, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData = 0);
-int setCarrierFrequency(const float* const freq, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData = 0);
+int getCarrierFrequency(float* const freq, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+int setCarrierFrequency(const float* const freq, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
 
 enum RFM_PACKETFORMAT {
   RFM_PACKETFORMAT_FIXED = 0,
   RFM_PACKETFORMAT_VARIABLE = 1
 };
 
-int getPacketFormat(RFM_PACKETFORMAT* const pf, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData = 0);
-int setPacketFormat(const RFM_PACKETFORMAT* const pf, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData = 0);
+int getPacketFormat(enum RFM_PACKETFORMAT* const pf, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+int setPacketFormat(const enum RFM_PACKETFORMAT* const pf, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
 
-int getFifoData(unsigned char* const data, unsigned int length, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData = 0);
-int setFifoData(const unsigned char* const data, unsigned int length, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData = 0);
+int getFifoData(unsigned char* const data, unsigned int length, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+int setFifoData(const unsigned char* const data, unsigned int length, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
 #endif
