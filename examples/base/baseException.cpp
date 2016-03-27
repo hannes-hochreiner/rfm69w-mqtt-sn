@@ -20,56 +20,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-#include <iostream>
-#include <exception>
-#include <wiringPiSPI.h>
 #include "baseException.h"
-#include "../../src/rfm69w.h"
 
-void setup();
-
-int spiTransfer(unsigned char* const bytes, unsigned int length, void* const customData) {
-  return wiringPiSPIDataRW(0, bytes, length);
+BaseException::BaseException(const std::string& description) {
+  _description = description;
 }
 
-int main() {
-  try {
-    setup();
-
-    return 0;
-  } catch (std::exception e) {
-    std::cerr << e.what() << "\n";
-
-    return -1;
-  }
+const char* BaseException::what() const throw() {
+  return _description.c_str();
 }
 
-void setup() {
-  if (wiringPiSPISetup(0, 500000) < 0) {
-    throw new BaseException("error setting up SPI interface");
-  }
-
-  RFM_MODE m = RFM_MODE_SLEEP;
-
-  if (setMode(&m, spiTransfer) < 0) {
-    throw new BaseException("error setting mode");
-  }
-
-  std::cout << "mode set to sleep\n";
-
-  float cf = 868;
-
-  if (setCarrierFrequency(&cf, spiTransfer) < 0) {
-    throw new BaseException("error setting carrier frequency");
-  }
-
-  std::cout << "carrier frequency set to " << cf << " MHz\n";
-
-  RFM_PACKETFORMAT pf = RFM_PACKETFORMAT_VARIABLE;
-
-  if (setPacketFormat(&pf, spiTransfer) < 0) {
-    throw new BaseException("error setting packet format");
-  }
-
-  std::cout << "packet format set to variable\n";
-}
+BaseException::~BaseException() throw() {}

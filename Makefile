@@ -12,5 +12,5 @@ bld_test/test_all: Makefile bld_test src_test/test_all.cpp src_test/rfm69w_test.
 bld:
 	mkdir bld
 
-base: bld examples/base/main.cpp src/rfm69w.c src/rfm69w.h
-	g++ -lwiringPi examples/base/main.cpp src/rfm69w.c -o bld/base
+base: bld examples/base/main.cpp examples/base/baseException.h examples/base/baseException.cpp src/rfm69w.c src/rfm69w.h
+	g++ -lwiringPi examples/base/main.cpp examples/base/baseException.cpp src/rfm69w.c -o bld/base
