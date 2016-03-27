@@ -30,7 +30,7 @@
 void setup();
 
 int spiTransfer(unsigned char* const bytes, unsigned int length, void* const customData) {
-  return wiringPiSPIDataRW(0, bytes, length, customData);
+  return wiringPiSPIDataRW(0, bytes, length);
 }
 
 void dataReceived() {
