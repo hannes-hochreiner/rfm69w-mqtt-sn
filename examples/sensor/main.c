@@ -56,8 +56,8 @@ int main()
 
   spiInitMaster();
 
-  enum RFM_MODE ms = RFM_MODE_SLEEP;
-  setMode(&ms, transfer, NULL);
+  enum RFM_MODE m = RFM_MODE_SLEEP;
+  setMode(&m, transfer, NULL);
 
   float cf = 868;
   setCarrierFrequency(&cf, transfer, NULL);
@@ -73,9 +73,14 @@ int main()
 
     setFifoData(data, 3, transfer, NULL);
 
-    enum RFM_MODE mr = RFM_MODE_TX;
-    setMode(&mr, transfer, NULL);
+    m = RFM_MODE_TX;
+    setMode(&m, transfer, NULL);
 
+    // should be replaced by a proper check of the pin
+    _delay_ms(100);
+
+    m = RFM_MODE_SLEEP;
+    setMode(&m, transfer, NULL);
   }
 
   return 0;
