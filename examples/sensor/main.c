@@ -54,6 +54,9 @@ int main()
   DDRA |= (1<<DDA2); // cable select.
   PORTA |= (1<<PORTA2);
 
+  DDRA |= (1<<DDA1); // signal pin.
+  PORTA &= ~(1<<PORTA1);
+
   spiInitMaster();
 
   enum RFM_MODE m = RFM_MODE_SLEEP;
@@ -76,8 +79,15 @@ int main()
     m = RFM_MODE_TX;
     setMode(&m, transfer, NULL);
 
-    // should be replaced by a proper check of the pin
-    _delay_ms(100);
+    enum RFM_FLAG f = RFM_FLAG_UNSET;
+
+    while(f != RFM_FLAG_SET) {
+      // should be replaced by a proper check of the pin
+      _delay_ms(100);
+      getPacketSent(&f, transfer, NULL);
+    }
+
+    PORTA |= (1<<PORTA1);
 
     m = RFM_MODE_SLEEP;
     setMode(&m, transfer, NULL);
