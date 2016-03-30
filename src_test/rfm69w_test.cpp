@@ -171,3 +171,15 @@ TEST(RFM69W, setFifoData) {
 
   EXPECT_EQ(0, setFifoData((unsigned char *)&data, 2, fakeSpiFun, &resps));
 }
+
+TEST(RFM69W, getPacketSent) {
+  RFM_FLAG f;
+  std::queue<int> responses;
+  std::queue<std::tuple<unsigned char, unsigned char>> resps;
+
+  resps.push(std::make_tuple(0x28, 0x00));
+  resps.push(std::make_tuple(0x00, 0b00001000));
+
+  EXPECT_EQ(0, getPacketSent(&f, fakeSpiFun, &resps));
+  EXPECT_EQ(RFM_FLAG_SET, f);
+}

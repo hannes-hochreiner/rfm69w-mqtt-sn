@@ -56,4 +56,11 @@ int setPacketFormat(const enum RFM_PACKETFORMAT* const pf, int (*spiTransfer)(un
 
 int getFifoData(unsigned char* const data, unsigned int length, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
 int setFifoData(const unsigned char* const data, unsigned int length, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+
+enum RFM_FLAG {
+  RFM_FLAG_UNSET = 0,
+  RFM_FLAG_SET = 1
+};
+
+int getPacketSent(enum RFM_FLAG* const f, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
 #endif
