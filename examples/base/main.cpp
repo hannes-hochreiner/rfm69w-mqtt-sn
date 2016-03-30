@@ -59,8 +59,11 @@ int main() {
   try {
     setup();
 
-    while (1) {
-      wiringPiISR(13, INT_EDGE_RISING,  dataReceived);
+    RFM_FLAG f = RFM_FLAG_UNSET;
+
+    while (f == RFM_FLAG_UNSET) {
+      getPayloadReady(&f, spiTransfer, NULL);
+      // wiringPiISR(13, INT_EDGE_RISING,  dataReceived);
     }
 
     return 0;

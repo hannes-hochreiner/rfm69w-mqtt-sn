@@ -176,3 +176,16 @@ int getPacketSent(enum RFM_FLAG* const f, int (*spiTransfer)(unsigned char* cons
 
   return 0;
 }
+
+int getPayloadReady(enum RFM_FLAG* const f, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData) {
+  unsigned char data[] = {0x28, 0x00};
+  int res = (*spiTransfer)(data, 2, customData);
+
+  if (res < 0) {
+    return res;
+  }
+
+  *f = (enum RFM_FLAG)(data[1] >> 2 & 0x01);
+
+  return 0;
+}

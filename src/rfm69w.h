@@ -63,4 +63,5 @@ enum RFM_FLAG {
 };
 
 int getPacketSent(enum RFM_FLAG* const f, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+int getPayloadReady(enum RFM_FLAG* const f, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
 #endif

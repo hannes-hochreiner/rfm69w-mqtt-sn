@@ -183,3 +183,15 @@ TEST(RFM69W, getPacketSent) {
   EXPECT_EQ(0, getPacketSent(&f, fakeSpiFun, &resps));
   EXPECT_EQ(RFM_FLAG_SET, f);
 }
+
+TEST(RFM69W, getPayloadReady) {
+  RFM_FLAG f;
+  std::queue<int> responses;
+  std::queue<std::tuple<unsigned char, unsigned char>> resps;
+
+  resps.push(std::make_tuple(0x28, 0x00));
+  resps.push(std::make_tuple(0x00, 0b00000100));
+
+  EXPECT_EQ(0, getPayloadReady(&f, fakeSpiFun, &resps));
+  EXPECT_EQ(RFM_FLAG_SET, f);
+}
