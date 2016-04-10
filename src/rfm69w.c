@@ -49,6 +49,50 @@ int setMode(const enum RFM_MODE* const m, int (*spiTransfer)(unsigned char*, uns
   return (*spiTransfer)(data, 2, customData);
 }
 
+int setModeChecked(const enum RFM_MODE* const m, int (*spiTransfer)(unsigned char*, unsigned int, void* customData), void* customData) {
+  int res = setMode(m, spiTransfer, customData);
+
+  if (res < 0) {
+    return res;
+  }
+
+  enum RFM_FLAG f = RFM_FLAG_UNSET;
+
+  while (f != RFM_FLAG_SET) {
+    res = getModeReady(&f, spiTransfer, customData);
+
+    if (res < 0) {
+      return res;
+    }
+  }
+
+  enum RFM_MODE modeNew;
+
+  res = getMode(&modeNew, spiTransfer, customData);
+
+  if (res < 0) {
+    return res;
+  }
+
+  if (modeNew != *m) {
+    return -1;
+  }
+
+  if (*m == RFM_MODE_TX) {
+    f = RFM_FLAG_UNSET;
+
+    while (f != RFM_FLAG_SET) {
+      res = getTxReady(&f, spiTransfer, customData);
+
+      if (res < 0) {
+        return res;
+      }
+    }
+  }
+
+  return 0;
+}
+
 int getDataMode(enum RFM_DATAMODE* const dm, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData) {
   unsigned char data[] = {0x02, 0x00};
   int res = (*spiTransfer)(data, 2, customData);
@@ -103,6 +147,46 @@ int setCarrierFrequency(const float* const freq, int (*spiTransfer)(unsigned cha
   return (*spiTransfer)(data, 4, customData);
 }
 
+int setCarrierFrequencyChecked(const float* const freq, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData) {
+  enum RFM_MODE modeCurrent;
+
+  int res = getMode(&modeCurrent, spiTransfer, customData);
+
+  if (res < 0) {
+    return -1;
+  }
+
+  enum RFM_MODE m = RFM_MODE_RX;
+
+  res = setModeChecked(&m, spiTransfer, customData);
+
+  if (res < 0) {
+    return res;
+  }
+
+  res = setCarrierFrequency(freq, spiTransfer, customData);
+
+  if (res < 0) {
+    return res;
+  }
+
+  m = RFM_MODE_FS;
+
+  res = setModeChecked(&m, spiTransfer, customData);
+
+  if (res < 0) {
+    return res;
+  }
+
+  res = setModeChecked(&modeCurrent, spiTransfer, customData);
+
+  if (res < 0) {
+    return res;
+  }
+
+  return 0;
+}
+
 int getPacketFormat(enum RFM_PACKETFORMAT* const pf, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData) {
   unsigned char data[] = {0x37, 0x00};
   int res = (*spiTransfer)(data, 2, customData);
@@ -128,6 +212,24 @@ int setPacketFormat(const enum RFM_PACKETFORMAT* const pf, int (*spiTransfer)(un
   data[1] = data[1] ^ (((*pf << 7) ^ data[1]) & 0b10000000);
 
   return (*spiTransfer)(data, 2, customData);
+}
+
+int setPacketFormatChecked(const enum RFM_PACKETFORMAT* const pf, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData) {
+  int res = setPacketFormat(pf, spiTransfer, customData);
+
+  enum RFM_PACKETFORMAT pfNew;
+
+  res = getPacketFormat(&pfNew, spiTransfer, customData);
+
+  if (res < 0) {
+    return res;
+  }
+
+  if (pfNew != *pf) {
+    return -1;
+  }
+
+  return 0;
 }
 
 int getFifoData(unsigned char* const data, unsigned int length, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData) {
@@ -188,4 +290,107 @@ int getPayloadReady(enum RFM_FLAG* const f, int (*spiTransfer)(unsigned char* co
   *f = (enum RFM_FLAG)(data[1] >> 2 & 0x01);
 
   return 0;
+}
+
+int getModeReady(enum RFM_FLAG* const f, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData) {
+  unsigned char data[] = {0x27, 0x00};
+  int res = (*spiTransfer)(data, 2, customData);
+
+  if (res < 0) {
+    return res;
+  }
+
+  *f = (enum RFM_FLAG)(data[1] >> 7 & 0x01);
+
+  return 0;
+}
+
+int getSyncAddressMatch(enum RFM_FLAG* const f, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData) {
+  unsigned char data[] = {0x27, 0x00};
+  int res = (*spiTransfer)(data, 2, customData);
+
+  if (res < 0) {
+    return res;
+  }
+
+  *f = (enum RFM_FLAG)(data[1] & 0x01);
+
+  return 0;
+}
+
+int getTxReady(enum RFM_FLAG* const f, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData) {
+  unsigned char data[] = {0x27, 0x00};
+  int res = (*spiTransfer)(data, 2, customData);
+
+  if (res < 0) {
+    return res;
+  }
+
+  *f = (enum RFM_FLAG)(data[1] >> 5 & 0x01);
+
+  return 0;
+}
+
+int getPayloadLength(unsigned int* const length, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData) {
+  unsigned char data[] = {0x38, 0x00};
+  int res = (*spiTransfer)(data, 2, customData);
+
+  if (res < 0) {
+    return res;
+  }
+
+  *length = (unsigned int)data[1];
+
+  return 0;
+}
+
+int setPayloadLength(const unsigned int* const length, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData) {
+  if (*length > 255) {
+    return -1;
+  }
+
+  unsigned char data[] = {0x38 | 1 << 7, (unsigned char)*length};
+
+  return (*spiTransfer)(data, 2, customData);
+}
+
+int setPayloadLengthChecked(const unsigned int* const length, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData) {
+  int res = setPayloadLength(length, spiTransfer, customData);
+
+  if (res < 0) {
+    return res;
+  }
+
+  unsigned int lengthNew;
+
+  res = getPayloadLength(&lengthNew, spiTransfer, customData);
+
+  if (res < 0) {
+    return res;
+  }
+
+  if (lengthNew != *length) {
+    return -1;
+  }
+
+  return 0;
+}
+
+int getPreambleLength(unsigned int* const length, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData) {
+  unsigned char data[] = {0x2C, 0x00, 0x00};
+  int res = (*spiTransfer)(data, 3, customData);
+
+  if (res < 0) {
+    return res;
+  }
+
+  *length = ((unsigned int)data[1] << 8) + data[2];
+
+  return 0;
+}
+
+int setPreambleLength(const unsigned int* const length, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData) {
+  unsigned char data[] = {0x2C | 1 << 7, (unsigned char)(*length >> 8), (unsigned char)*length};
+
+  return (*spiTransfer)(data, 3, customData);
 }

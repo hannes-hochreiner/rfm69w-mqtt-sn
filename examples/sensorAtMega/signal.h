@@ -20,23 +20,36 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-#include "spi.h"
+#ifndef __SIGNAL_H__
+#define __SIGNAL_H__
+#include <stdbool.h>
+#include <avr/io.h>
 
-void spiInitMaster()
-{
-  // Configure port directions.
-  DDRA |= (1<<DDA5) | (1<<DDA4); // Outputs.
-  DDRA &= ~(1<<DDA6); // Inputs.
-}
+#ifndef DDR_SP
+#error "Data direction register for signal pins (DDR_SP) needs to be defined."
+#endif
 
-uint8_t spiTransfer(uint8_t data)
-{
-  USIDR = data;
-  USISR = (1<<USIOIF); // clear flag
+#ifndef DD_SP_OK
+#error "Data direction bit for signal pin 'ok' (DD_SP_OK) needs to be defined."
+#endif
 
-  do {
-    USICR = (1<<USIWM0)|(1<<USICS1)|(1<<USICLK)|(1<<USITC);
-  } while ((USISR & (1<<USIOIF)) == 0 );
+#ifndef DD_SP_ERROR
+#error "Data direction bit for signal pin 'error' (DD_SP_ERROR) needs to be defined."
+#endif
 
-  return USIDR;
-}
+#ifndef PORTR_SP
+#error "Port register for signal pins (PORTR_SP) needs to be defined."
+#endif
+
+#ifndef PORT_SP_OK
+#error "Port register bit for signal pin 'ok' (PORT_SP_OK) needs to be defined."
+#endif
+
+#ifndef PORT_SP_ERROR
+#error "Port register bit for signal pin 'error' (PORT_SP_ERROR) needs to be defined."
+#endif
+
+void signalInit();
+void signalOk(bool permanent, void (*delay)(double));
+void signalError(bool permanent, void (*delay)(double));
+#endif

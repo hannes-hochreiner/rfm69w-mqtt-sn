@@ -20,11 +20,30 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-#ifndef __SPI__
-#define __SPI__
+#include "signal.h"
 
-#include <avr/io.h>
+void signalInit() {
+  DDR_SP = (1<<DD_SP_OK)|(1<<DD_SP_ERROR);
+}
 
-uint8_t spiTransfer(uint8_t data);
-void spiInitMaster();
-#endif
+void signal(bool permanent, void (*delay)(double), unsigned char port) {
+  PORTR_SP |= (1<<port);
+  (*delay)(500);
+
+  if (permanent) {
+    while (1) {
+      PORTR_SP ^= (1<<port);
+      (*delay)(500);
+    }
+  } else {
+    PORTR_SP &= ~(1<<port);
+  }
+}
+
+void signalOk(bool permanent, void (*delay)(double)) {
+  signal(permanent, delay, PORT_SP_OK);
+}
+
+void signalError(bool permanent, void (*delay)(double)) {
+  signal(permanent, delay, PORT_SP_ERROR);
+}

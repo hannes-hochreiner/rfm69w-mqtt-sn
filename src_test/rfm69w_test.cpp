@@ -195,3 +195,87 @@ TEST(RFM69W, getPayloadReady) {
   EXPECT_EQ(0, getPayloadReady(&f, fakeSpiFun, &resps));
   EXPECT_EQ(RFM_FLAG_SET, f);
 }
+
+TEST(RFM69W, getModeReady) {
+  RFM_FLAG f;
+  std::queue<int> responses;
+  std::queue<std::tuple<unsigned char, unsigned char>> resps;
+
+  resps.push(std::make_tuple(0x27, 0x00));
+  resps.push(std::make_tuple(0x00, 0b10000000));
+
+  EXPECT_EQ(0, getModeReady(&f, fakeSpiFun, &resps));
+  EXPECT_EQ(RFM_FLAG_SET, f);
+}
+
+TEST(RFM69W, getSyncAddressMatch) {
+  RFM_FLAG f;
+  std::queue<int> responses;
+  std::queue<std::tuple<unsigned char, unsigned char>> resps;
+
+  resps.push(std::make_tuple(0x27, 0x00));
+  resps.push(std::make_tuple(0x00, 0b00000001));
+
+  EXPECT_EQ(0, getSyncAddressMatch(&f, fakeSpiFun, &resps));
+  EXPECT_EQ(RFM_FLAG_SET, f);
+}
+
+TEST(RFM69W, getTxReady) {
+  RFM_FLAG f;
+  std::queue<int> responses;
+  std::queue<std::tuple<unsigned char, unsigned char>> resps;
+
+  resps.push(std::make_tuple(0x27, 0x00));
+  resps.push(std::make_tuple(0x00, 0b00100000));
+
+  EXPECT_EQ(0, getTxReady(&f, fakeSpiFun, &resps));
+  EXPECT_EQ(RFM_FLAG_SET, f);
+}
+
+TEST(RFM69W, getPayloadLength) {
+  unsigned int l;
+  std::queue<int> responses;
+  std::queue<std::tuple<unsigned char, unsigned char>> resps;
+
+  resps.push(std::make_tuple(0x38, 0x00));
+  resps.push(std::make_tuple(0x00, 0x40));
+
+  EXPECT_EQ(0, getPayloadLength(&l, fakeSpiFun, &resps));
+  EXPECT_EQ(64, l);
+}
+
+TEST(RFM69W, setPayloadLength) {
+  unsigned int l = 65;
+  std::queue<int> responses;
+  std::queue<std::tuple<unsigned char, unsigned char>> resps;
+
+  resps.push(std::make_tuple(0xB8, 0x00));
+  resps.push(std::make_tuple(0x41, 0x00));
+
+  EXPECT_EQ(0, setPayloadLength(&l, fakeSpiFun, &resps));
+}
+
+TEST(RFM69W, getPreambleLength) {
+  unsigned int l;
+  std::queue<int> responses;
+  std::queue<std::tuple<unsigned char, unsigned char>> resps;
+
+  resps.push(std::make_tuple(0x2C, 0x00));
+  resps.push(std::make_tuple(0x00, 0x10));
+  resps.push(std::make_tuple(0x00, 0x03));
+
+  EXPECT_EQ(0, getPreambleLength(&l, fakeSpiFun, &resps));
+  EXPECT_EQ(4099, l);
+}
+
+TEST(RFM69W, setPreambleLength) {
+  unsigned int l = 4099;
+  std::queue<int> responses;
+  std::queue<std::tuple<unsigned char, unsigned char>> resps;
+
+  resps.push(std::make_tuple(0xAC, 0x00));
+  resps.push(std::make_tuple(0x10, 0x00));
+  resps.push(std::make_tuple(0x03, 0x00));
+
+  EXPECT_EQ(0, setPreambleLength(&l, fakeSpiFun, &resps));
+}

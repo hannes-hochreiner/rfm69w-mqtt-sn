@@ -33,6 +33,7 @@ enum RFM_MODE {
 
 int getMode(enum RFM_MODE* const m, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
 int setMode(const enum RFM_MODE* const m, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+int setModeChecked(const enum RFM_MODE* const m, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
 
 enum RFM_DATAMODE {
   RFM_DATAMODE_PACKET = 0,
@@ -45,6 +46,7 @@ int setDataMode(const enum RFM_DATAMODE* const dm, int (*spiTransfer)(unsigned c
 
 int getCarrierFrequency(float* const freq, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
 int setCarrierFrequency(const float* const freq, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+int setCarrierFrequencyChecked(const float* const freq, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
 
 enum RFM_PACKETFORMAT {
   RFM_PACKETFORMAT_FIXED = 0,
@@ -53,6 +55,7 @@ enum RFM_PACKETFORMAT {
 
 int getPacketFormat(enum RFM_PACKETFORMAT* const pf, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
 int setPacketFormat(const enum RFM_PACKETFORMAT* const pf, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+int setPacketFormatChecked(const enum RFM_PACKETFORMAT* const pf, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
 
 int getFifoData(unsigned char* const data, unsigned int length, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
 int setFifoData(const unsigned char* const data, unsigned int length, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
@@ -64,4 +67,13 @@ enum RFM_FLAG {
 
 int getPacketSent(enum RFM_FLAG* const f, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
 int getPayloadReady(enum RFM_FLAG* const f, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+int getModeReady(enum RFM_FLAG* const f, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+int getSyncAddressMatch(enum RFM_FLAG* const f, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+int getTxReady(enum RFM_FLAG* const f, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+
+int getPayloadLength(unsigned int* const length, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+int setPayloadLength(const unsigned int* const length, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+int setPayloadLengthChecked(const unsigned int* const length, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+int getPreambleLength(unsigned int* const length, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+int setPreambleLength(const unsigned int* const length, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
 #endif

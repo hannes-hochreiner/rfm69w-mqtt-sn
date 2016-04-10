@@ -29,6 +29,7 @@
 
 void setup();
 void waitForModeReady();
+void waitForTxReady();
 void checkMode(const RFM_MODE& m);
 
 int spiTransfer(unsigned char* const bytes, unsigned int length, void* const customData) {
@@ -90,16 +91,24 @@ void setup() {
     throw new BaseException("error setting up SPI interface");
   }
 
-  RFM_PACKETFORMAT pf = RFM_PACKETFORMAT_VARIABLE;
+  RFM_PACKETFORMAT pf = RFM_PACKETFORMAT_FIXED;
 
   if (setPacketFormat(&pf, spiTransfer, NULL) < 0) {
     throw new BaseException("error setting packet format");
   }
 
-  std::cout << "packet format set to variable\n";
+  std::cout << "packet format set to fixed\n";
+
+  unsigned int payloadLength = 30;
+
+  if (setPayloadLength(&payloadLength, spiTransfer, NULL) < 0) {
+    throw new BaseException("error setting payload length");
+  }
+
+  std::cout << "payload length set to " << payloadLength << "\n";
 
   RFM_MODE mr = RFM_MODE_RX;
-  RFM_MODE mf = RFM_MODE_FS;
+  RFM_MODE mt = RFM_MODE_TX;
 
   if (setMode(&mr, spiTransfer, NULL) < 0) {
     throw new BaseException("error setting mode");
@@ -123,34 +132,56 @@ void setup() {
 
   std::cout << "carrier frequency set to " << cf << " MHz\n";
 
-  if (setMode(&mf, spiTransfer, NULL) < 0) {
+  if (setMode(&mt, spiTransfer, NULL) < 0) {
     throw new BaseException("error setting mode");
   }
 
-  std::cout << "mode set to frequency synthesis...";
+  std::cout << "mode set to transmission...";
 
   waitForModeReady();
 
   std::cout << "ready...";
 
-  checkMode(RFM_MODE_FS);
+  checkMode(RFM_MODE_TX);
 
   std::cout << "check passed\n";
 
-  if (setMode(&mr, spiTransfer, NULL) < 0) {
-    throw new BaseException("error setting mode");
+  waitForTxReady();
+
+  std::cout << "TX ready\n";
+
+  // unsigned char data[] = {0x14, 0xA5, 0x5A, 0x1A, 0x1A};
+  unsigned char data[] = "012345678901234567890123456789012345";
+
+  if (setFifoData(data, 30, spiTransfer, NULL) < 0) {
+    throw new BaseException("error setting fifo data");
   }
 
-  std::cout << "mode set to receive...";
+  std::cout << "data written to fifo\n";
 
-  waitForModeReady();
+  RFM_FLAG ps = RFM_FLAG_UNSET;
 
-  std::cout << "ready...";
+  while (ps != RFM_FLAG_SET) {
+    if (getPacketSent(&ps, spiTransfer, NULL) < 0) {
+      throw new BaseException("error checking packet send");
+    }
+  }
 
-  checkMode(RFM_MODE_RX);
-
-  std::cout << "check passed\n";
+  std::cout << "packet sent\n";
 }
+
+void waitForTxReady() {
+  RFM_FLAG f = RFM_FLAG_UNSET;
+
+  while(f != RFM_FLAG_SET) {
+    if (getTxReady(&f, spiTransfer, NULL) < 0) {
+      throw new BaseException("error getting mode ready");
+    }
+  }
+
+  return;
+}
+
 
 void waitForModeReady() {
   RFM_FLAG f = RFM_FLAG_UNSET;
