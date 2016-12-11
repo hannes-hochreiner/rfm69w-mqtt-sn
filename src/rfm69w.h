@@ -43,10 +43,40 @@ enum RFM_DATAMODE {
 
 int getDataMode(enum RFM_DATAMODE* const dm, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
 int setDataMode(const enum RFM_DATAMODE* const dm, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+int setDataModeChecked(const enum RFM_DATAMODE* const dm, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+
+enum RFM_MODULATIONTYPE {
+  RFM_MODULATIONTYPE_FSK = 0,
+  RFM_MODULATIONTYPE_OOK = 1
+};
+
+int getModulationType(enum RFM_MODULATIONTYPE* const mt, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+int setModulationType(enum RFM_MODULATIONTYPE* const mt, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+int setModulationTypeChecked(enum RFM_MODULATIONTYPE* const mt, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+
+enum RFM_MODULATIONSHAPING {
+  RFM_MODULATIONSHAPING_NONE = 0,
+  RFM_MODULATIONSHAPING_FSK_GAUSSBT10 = 1,
+  RFM_MODULATIONSHAPING_FSK_GAUSSBT05 = 2,
+  RFM_MODULATIONSHAPING_FSK_GAUSSBT03 = 3,
+  RFM_MODULATIONSHAPING_OOK_CUTOFFBR = 1,
+  RFM_MODULATIONSHAPING_OOK_CUTOFF2BR = 2
+};
+
+int getModulationShaping(enum RFM_MODULATIONSHAPING* const ms, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+int setModulationShaping(enum RFM_MODULATIONSHAPING* const ms, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+int setModulationShapingChecked(enum RFM_MODULATIONSHAPING* const ms, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
 
 int getCarrierFrequency(float* const freq, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
 int setCarrierFrequency(const float* const freq, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
 int setCarrierFrequencyChecked(const float* const freq, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+int getCarrierFrequencyDeviation(float* const freq, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+int setCarrierFrequencyDeviation(const float* const freq, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+int setCarrierFrequencyDeviationChecked(const float* const freq, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+
+int getBitRate(float* const bitRate, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+int setBitRate(const float* const bitRate, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+int setBitRateChecked(const float* const bitRate, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
 
 enum RFM_PACKETFORMAT {
   RFM_PACKETFORMAT_FIXED = 0,
@@ -70,10 +100,18 @@ int getPayloadReady(enum RFM_FLAG* const f, int (*spiTransfer)(unsigned char* co
 int getModeReady(enum RFM_FLAG* const f, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
 int getSyncAddressMatch(enum RFM_FLAG* const f, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
 int getTxReady(enum RFM_FLAG* const f, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+int getRxReady(enum RFM_FLAG* const f, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
 
 int getPayloadLength(unsigned int* const length, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
 int setPayloadLength(const unsigned int* const length, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
 int setPayloadLengthChecked(const unsigned int* const length, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
 int getPreambleLength(unsigned int* const length, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
 int setPreambleLength(const unsigned int* const length, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+int setPreambleLengthChecked(const unsigned int* const length, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+int getOutputPower(unsigned int* const power, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+int setOutputPower(const unsigned int* const power, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+int setOutputPowerChecked(const unsigned int* const power, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+int getRssi(double* const power, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+int getFifoNotEmpty(enum RFM_FLAG* const f, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
+int setSync(const unsigned char* const data, unsigned int length, int (*spiTransfer)(unsigned char* const, unsigned int, void* const customData), void* const customData);
 #endif

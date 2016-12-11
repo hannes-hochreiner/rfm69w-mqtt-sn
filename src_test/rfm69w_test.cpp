@@ -232,6 +232,18 @@ TEST(RFM69W, getTxReady) {
   EXPECT_EQ(RFM_FLAG_SET, f);
 }
 
+TEST(RFM69W, getRxReady) {
+  RFM_FLAG f;
+  std::queue<int> responses;
+  std::queue<std::tuple<unsigned char, unsigned char>> resps;
+
+  resps.push(std::make_tuple(0x27, 0x00));
+  resps.push(std::make_tuple(0x00, 0b01000000));
+
+  EXPECT_EQ(0, getRxReady(&f, fakeSpiFun, &resps));
+  EXPECT_EQ(RFM_FLAG_SET, f);
+}
+
 TEST(RFM69W, getPayloadLength) {
   unsigned int l;
   std::queue<int> responses;

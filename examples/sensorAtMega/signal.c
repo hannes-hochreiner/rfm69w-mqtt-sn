@@ -28,12 +28,12 @@ void signalInit() {
 
 void signal(bool permanent, void (*delay)(double), unsigned char port) {
   PORTR_SP |= (1<<port);
-  (*delay)(500);
+  (*delay)(10);
 
   if (permanent) {
     while (1) {
       PORTR_SP ^= (1<<port);
-      (*delay)(500);
+      (*delay)(10);
     }
   } else {
     PORTR_SP &= ~(1<<port);
